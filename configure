@@ -1,0 +1,14 @@
+[section1]
+group=caocao-param
+dataId=customerWhiteSet
+content=123456
+
+[section2]
+group=caocao-param
+dataId=driverWhiteSet
+content=123456
+
+[section3]
+group=caocao-param
+dataId=maxOrderBatchQuerySize
+content=1
