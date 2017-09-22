@@ -16,7 +16,7 @@ import time
 
 from selenium.common.exceptions import NoSuchElementException
 
-from get_conf import cdiamond_info
+from get_conf import cdiamond_info, sync_cdia
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -59,13 +59,14 @@ def login(infos):
     time.sleep(0.5)
     driver.find_element_by_xpath('//*[@id="loginForm"]/fieldset/button[1]').click()
     time.sleep(1)
+    print '-----------------------------------------------'
     if is_element_exist(driver, '/html/body/div[2]/div/div[1]/div/ul/li[1]/h3'):
         print u'成功进入到cdiamond 配置管理中心'
     else:
         print u'没有进入到cdiamond 配置管理中心'
     driver.find_element_by_xpath('//*[@id="configId"]/a').click()
     if is_element_exist(driver, '/html/body/div[2]/div/div[2]/div/div/table/thead/tr/th[1]'):
-        print u'进入环境'+infos[3]+u'到配置信息管理页面,ip为：' + infos[0]
+        print u'进入环境' + infos[3] + u'到配置信息管理页面,ip为：' + infos[0]
     else:
         print u'没有进入到配置信息管理页面'
     time.sleep(1)
@@ -113,10 +114,31 @@ def type_infos(driver, info_to_cdiamond):
                   info_to_cdiamond[2]
         else:
             print u'提交失败'
-        driver.quit()
+    driver.quit()
 
+
+def info_from_cdia(src_env):
+    """
+    输入列表，此列表包含的信息为group 和 dataID 以及环境。
+    :return:一个包含所有dataid和content的二维数组
+    """
+    all_infos_sync = []
+    infos = sync_cdia(src_env)
+    for i in range(len(infos)):
+        info_src = []
+        driver = login(cdiamond_info(src_env))
+        dataid = infos[i][1]
+        driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[2]').send_keys(dataid)
+        driver.find_element_by_xpath('//*[@id="queryForm"]/div/button[2]').click()  # 点击模糊查询按钮
+        time.sleep(1)
+        content = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[3]').text
+        group = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[1]').text
+        driver.quit()
+        info_src.append(group)
+        info_src.append(dataid)
+        info_src.append(content)
+        all_infos_sync.append(info_src)
+    return all_infos_sync
 
 if __name__ == '__main__':
-    infos = cdiamond_info('test44')
-    info_test = ["caocao-param", "driverWhiteSet", "111111"]
-    type_infos(login(infos), info_test)
+    print info_from_cdia('test44')

@@ -40,5 +40,5 @@ def create_all_cdiamond():
 
 
 if __name__ == '__main__':
-    # create_all_cdiamond()
-    pass
+    create_all_cdiamond()
+    # pass

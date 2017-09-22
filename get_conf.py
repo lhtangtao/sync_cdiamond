@@ -28,7 +28,6 @@ def all_cdiamond():
     conf = ConfigParser.ConfigParser()
     conf.read(conf_path)
     sections = conf.sections()
-    print sections
     for i in range(len(sections)):
         infos = [sections[i], conf.get(sections[i], 'address'), conf.get(sections[i], 'username'),
                  conf.get(sections[i], 'password')]
@@ -70,7 +69,21 @@ def configure_needed():
     return we_need
 
 
+def sync_cdia(cdiamond_env):
+    """
+    读取你要同步的group和dataID。输入为所要读取的环境。
+    :param cdiamond_env:
+    :return:
+    """
+    we_need = []
+    conf_path = os.path.join(os.path.dirname(__file__), 'configure')
+    conf = ConfigParser.ConfigParser()
+    conf.read(conf_path)
+    for i in range(len(conf.sections())):
+        infos = [conf.get(str(i), 'group'), conf.get(str(i), 'dataId'), cdiamond_env]
+        we_need.append(infos)
+    return we_need
+
+
 if __name__ == '__main__':
-    # print cdiamond_info('test44')
-    # print configure_needed()
-    print all_cdiamond()
+    print sync_cdia("test44")
