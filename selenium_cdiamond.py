@@ -7,7 +7,7 @@
 @git:lhtangtao
 @version: 
 @software: PyCharm
-@file: login_cdiamond.py
+@file: selenium_cdiamond.py
 @time: 2017/9/21 16:32
 """
 import sys
@@ -65,7 +65,7 @@ def login(infos):
         print u'没有进入到cdiamond 配置管理中心'
     driver.find_element_by_xpath('//*[@id="configId"]/a').click()
     if is_element_exist(driver, '/html/body/div[2]/div/div[2]/div/div/table/thead/tr/th[1]'):
-        print u'进入到配置信息管理页面,ip为：'+infos[0]
+        print u'进入环境'+infos[3]+u'到配置信息管理页面,ip为：' + infos[0]
     else:
         print u'没有进入到配置信息管理页面'
     time.sleep(1)
@@ -82,21 +82,40 @@ def type_infos(driver, info_to_cdiamond):
     driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[2]').send_keys(info_to_cdiamond[1])
     driver.find_element_by_xpath('//*[@id="queryForm"]/div/button[2]').click()  # 点击模糊查询按钮
     time.sleep(1)
-    if is_element_exist(driver,'/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[1]'):
+    len_tr = len(
+        driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody').find_elements_by_tag_name(
+            'tr'))  # 查询得到的列表数的个数，为0则说明没有该dataid
+    if len_tr != 0:
         print u'dataid存在 下一步进行配置修改'
-        driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[5]/a[1]').click() # 点击编辑按钮
+        driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[5]/a[1]').click()  # 点击编辑按钮
         time.sleep(1)
         driver.find_element_by_xpath('//*[@id="textarea"]').clear()
         driver.find_element_by_xpath('//*[@id="textarea"]').send_keys(info_to_cdiamond[2])
         time.sleep(0.5)
-        driver.find_element_by_xpath('//*[@id="configForm"]/div[5]/button[1]').click() # 点击提交
+        driver.find_element_by_xpath('//*[@id="configForm"]/div[5]/button[1]').click()  # 点击提交
         time.sleep(1)
         if driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div[1]').text == u'提交成功!':
-            print u'提交成功，已设置group为：'+info_to_cdiamond[0]+u' dataID为：'+info_to_cdiamond[1]+u' content为：'+ info_to_cdiamond[2]
+            print u'提交成功，已设置group为：' + info_to_cdiamond[0] + u' dataID为：' + info_to_cdiamond[1] + u' content为：' + \
+                  info_to_cdiamond[2]
         else:
             print u'提交失败'
     else:
-        print u'dataid不存在，下一步添加配置'
+        print u'dataid不存在，开始下一步添加配置'
+        driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/ul[2]/button[1]').click()  # 点击添加新的配置信息按钮
+        time.sleep(1)
+        driver.find_element_by_xpath('//*[@id="configForm"]/div[1]/input').send_keys(info_to_cdiamond[0])
+        driver.find_element_by_xpath('//*[@id="configForm"]/div[2]/input').send_keys(info_to_cdiamond[1])
+        driver.find_element_by_xpath('//*[@id="textarea"]').send_keys(info_to_cdiamond[2])
+        driver.find_element_by_xpath('//*[@id="configForm"]/div[5]/button[1]').click()  # 点击提交按钮
+        time.sleep(1)
+        if driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div[1]').text == u'提交成功!':
+            print u'提交成功，已设置group为：' + info_to_cdiamond[0] + u' dataID为：' + info_to_cdiamond[1] + u' content为：' + \
+                  info_to_cdiamond[2]
+        else:
+            print u'提交失败'
+        driver.quit()
+
+
 if __name__ == '__main__':
     infos = cdiamond_info('test44')
     info_test = ["caocao-param", "driverWhiteSet", "111111"]
