@@ -12,8 +12,8 @@
 """
 import sys
 
-from get_conf import cdiamond_info, configure_needed, all_cdiamond
-from selenium_cdiamond import type_infos, login
+from get_conf import cdiamond_info, configure_needed, all_cdiamond, sync_cdia
+from selenium_cdiamond import type_infos, login, info_from_cdia
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -39,6 +39,21 @@ def create_all_cdiamond():
         create_new_cdiamond(all_cdiamond()[i][0])
 
 
+def do_sync_cdia(src_env):
+    """
+    把要同步的信息全都同步过去
+    :return:
+    """
+    src_info = info_from_cdia(src_env)
+    print u"数据源为如下所示："
+    print src_info
+    for i in range(len(all_cdiamond())):
+        env = all_cdiamond()[i][0]
+        if env != src_env:
+            env_infos = cdiamond_info(env)
+            for z in range(len(src_info)):
+                type_infos(login(env_infos), src_info[z])
+
+
 if __name__ == '__main__':
-    create_all_cdiamond()
-    # pass
+    do_sync_cdia('test44')

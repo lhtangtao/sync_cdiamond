@@ -81,6 +81,7 @@ def type_infos(driver, info_to_cdiamond):
     :return:
     """
     driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[2]').send_keys(info_to_cdiamond[1])
+    driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[1]').send_keys(info_to_cdiamond[0])
     driver.find_element_by_xpath('//*[@id="queryForm"]/div/button[2]').click()  # 点击模糊查询按钮
     time.sleep(1)
     len_tr = len(
@@ -119,26 +120,33 @@ def type_infos(driver, info_to_cdiamond):
 
 def info_from_cdia(src_env):
     """
-    输入列表，此列表包含的信息为group 和 dataID 以及环境。
-    :return:一个包含所有dataid和content的二维数组
+    输入列表，此列表包含的信息为group 和 dataID 以及环境。 :return:一个包含所有dataid和content的二维数组 示例为：[[u'caocao-param', 'customerWhiteSet',
+    u'123456'], [u'caocao-param', 'driverWhiteSet', u'123456'], [u'caocao-param', 'maxOrderBatchQuerySize', u'1']]
     """
     all_infos_sync = []
     infos = sync_cdia(src_env)
+    print u"info_from_cdia函数中infos的值为："
+    print infos
     for i in range(len(infos)):
         info_src = []
         driver = login(cdiamond_info(src_env))
         dataid = infos[i][1]
+        group = infos[i][0]
+        driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[1]').send_keys(group)
         driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[2]').send_keys(dataid)
         driver.find_element_by_xpath('//*[@id="queryForm"]/div/button[2]').click()  # 点击模糊查询按钮
         time.sleep(1)
         content = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[3]').text
         group = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[1]').text
         driver.quit()
+        print u'所需要同步的数据已读取完成'
         info_src.append(group)
         info_src.append(dataid)
         info_src.append(content)
         all_infos_sync.append(info_src)
     return all_infos_sync
 
+
 if __name__ == '__main__':
-    print info_from_cdia('test44')
+    test_info = info_from_cdia('test44')
+    print test_info

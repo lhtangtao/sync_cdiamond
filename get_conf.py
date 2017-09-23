@@ -76,7 +76,7 @@ def sync_cdia(cdiamond_env):
     :return:
     """
     we_need = []
-    conf_path = os.path.join(os.path.dirname(__file__), 'configure')
+    conf_path = os.path.join(os.path.dirname(__file__), 'sync')
     conf = ConfigParser.ConfigParser()
     conf.read(conf_path)
     for i in range(len(conf.sections())):
@@ -86,4 +86,4 @@ def sync_cdia(cdiamond_env):
 
 
 if __name__ == '__main__':
-    print sync_cdia("test44")
+    print sync_cdia('test44')
