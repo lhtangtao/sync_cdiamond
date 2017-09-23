@@ -41,7 +41,7 @@ def create_all_cdiamond():
 
 def do_sync_cdia(src_env):
     """
-    把要同步的信息全都同步过去
+    输入源环境名称，会自动结合sync里的配置 把要同步的信息全都同步过去
     :return:
     """
     src_info = info_from_cdia(src_env)
