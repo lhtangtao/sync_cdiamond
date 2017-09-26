@@ -1,15 +1,15 @@
 #说明：需要添加的配置,请按照编号填写，由于是按照模糊搜索的，所以dataID请严格按照全称写。
 [0]
-group=caocao-param
-dataId=customerWhiteSet
+group=tangtao_test
+dataId=tangtao_test_1
 content=123456
 
 [1]
-group=caocao-param
-dataId=driverWhiteSet
+group=tangtao_test
+dataId=tangtao_test_2
 content=123456
 
 [2]
-group=caocao-param
-dataId=maxOrderBatchQuerySize
+group=tangtao_test
+dataId=tangtao_test_3
 content=1

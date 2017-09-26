@@ -20,8 +20,6 @@ from get_conf import cdiamond_info, sync_cdia
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
-
 def is_element_exist(driver, xpath):
     # type: (object, object) -> object
     """
@@ -38,14 +36,15 @@ def is_element_exist(driver, xpath):
         return str(False)
 
 
-def login(infos):
+def login(driver,infos):
     """
     传入一组信息列表 包含cdiamond的一些基础配置信息
+    :param driver:
     :param infos:
     :return:
     """
     # driver = webdriver.PhantomJS()
-    driver = webdriver.Chrome()
+
     driver.get(infos[0])
     driver.maximize_window()
     time.sleep(0.5)
@@ -115,10 +114,11 @@ def type_infos(driver, info_to_cdiamond):
                   info_to_cdiamond[2]
         else:
             print u'提交失败'
-    driver.quit()
+    return driver
+    # driver.quit()
 
 
-def info_from_cdia(src_env):
+def info_from_cdia(driver,src_env):
     """
     输入列表，此列表包含的信息为group 和 dataID 以及环境。 :return:一个包含所有dataid和content的二维数组 示例为：[[u'caocao-param', 'customerWhiteSet',
     u'123456'], [u'caocao-param', 'driverWhiteSet', u'123456'], [u'caocao-param', 'maxOrderBatchQuerySize', u'1']]
@@ -129,7 +129,7 @@ def info_from_cdia(src_env):
     print infos
     for i in range(len(infos)):
         info_src = []
-        driver = login(cdiamond_info(src_env))
+        driver = login(driver,cdiamond_info(src_env))
         dataid = infos[i][1]
         group = infos[i][0]
         driver.find_element_by_xpath('//*[@id="queryForm"]/div/input[1]').send_keys(group)
@@ -138,7 +138,6 @@ def info_from_cdia(src_env):
         time.sleep(1)
         content = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[3]').text
         group = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/div/table/tbody/tr/td[1]').text
-        driver.quit()
         print u'所需要同步的数据已读取完成'
         info_src.append(group)
         info_src.append(dataid)
@@ -147,6 +146,4 @@ def info_from_cdia(src_env):
     return all_infos_sync
 
 
-if __name__ == '__main__':
-    test_info = info_from_cdia('test44')
-    print test_info
+
